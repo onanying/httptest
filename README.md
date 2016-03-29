@@ -9,4 +9,4 @@ http post/get接口测试工具，可在线调试接口，支持多文件上传�
 
 ## 屏幕截图
 
-![image](https://raw.githubusercontent.com/onanying/httptest/master/screenshot/test.png)
+![image](https://raw.githubusercontent.com/onanying/httptest/master/Screenshot/test.png)
