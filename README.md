@@ -7,3 +7,6 @@ http post/get接口测试工具，可在线调试接口，支持多文件上传�
 * css使用开源框架Amaze UI，js使用jQuery。
 * 支持同时多个文件上传。
 
+## 屏幕截图
+
+![image](https://raw.githubusercontent.com/onanying/httptest/master/screenshot/test.png)

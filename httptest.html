@@ -1,0 +1,148 @@
+<html>
+<head>
+<title>HTTP POST/GET接口调试工具</title>
+<meta charset="utf-8">
+<link rel="stylesheet" href="http://cdn.amazeui.org/amazeui/2.5.2/css/amazeui.css">
+<link rel="stylesheet" href="http://cdn.amazeui.org/amazeui/2.5.2/css/amazeui.min.css">
+<script type="text/javascript" src="http://s.amazeui.org/assets/2.x/js/jquery.min.js"></script>
+<script type="text/javascript" src="http://cdn.amazeui.org/amazeui/2.5.2/js/amazeui.js"></script>
+<script type="text/javascript" src="http://cdn.amazeui.org/amazeui/2.5.2/js/amazeui.min.js"></script>
+<script type="text/javascript" src="http://cdn.amazeui.org/amazeui/2.5.2/js/amazeui.ie8polyfill.js"></script>
+<script type="text/javascript" src="http://cdn.amazeui.org/amazeui/2.5.2/js/amazeui.ie8polyfill.min.js"></script>
+<script type="text/javascript" src="http://cdn.amazeui.org/amazeui/2.5.2/js/amazeui.widgets.helper.js"></script>
+<script type="text/javascript" src="http://cdn.amazeui.org/amazeui/2.5.2/js/amazeui.widgets.helper.min.js"></script>
+</head>
+<body>
+
+<div class="am-container am-padding">
+	<h1>HTTP POST/GET接口调试工具</h1>
+
+	<div class="am-panel am-panel-default am-padding am-padding-vertical-xl">
+
+		<form class="am-form" method="post" action="" target="_blank" enctype="multipart/form-data">
+
+		<div class="am-g">
+		  <div class="am-u-sm-10"><input type="text" class="body-url am-form-field am-radius" placeholder="http://" /></div>
+		  <div class="am-u-sm-2"><button type="button" class="body-submit am-btn am-btn-success am-radius am-btn-block">提交</button></div>
+		</div>
+
+		<div id="body-box">
+
+		</div>
+
+		<div id="type-0" class="am-hide">
+
+			<div class="am-g am-margin-top">
+			  <div class="am-u-sm-4"><input type="text" class="body-name am-form-field am-radius" placeholder="Body参数名称" /></div>
+			  <div class="am-u-sm-6"><input type="text" class="am-form-field am-radius" placeholder="Body参数值" /></div>
+			  <div class="am-u-sm-2"><button type="button" class="delete-body am-btn am-btn-defult am-radius am-btn-block">删除</button></div>
+			</div>
+
+		</div>
+		
+		<div id="type-1" class="am-hide">
+
+			<div class="am-g am-margin-top">
+			  <div class="am-u-sm-4"><input type="text" class="body-name am-form-field am-radius" placeholder="Body参数名称" /></div>
+			  <div class="am-u-sm-2">
+			  	<div class="am-form-group am-form-file am-margin-0">
+				  <button type="button" class="am-btn am-btn-default am-radius">
+				  <i class="am-icon-cloud-upload"></i> 选择文件</button>
+				  <input type="file" multiple>
+				</div>				
+			  </div>
+			  <div class="am-u-sm-4">
+			  	<div id="file-list" class="am-vertical-align"  style="height: 38px;"></div>
+			  </div>
+			  <div class="am-u-sm-2"><button type="button" class="delete-body am-btn am-btn-defult am-radius am-btn-block">删除</button></div>
+			</div>
+
+		</div>
+
+		<div class="am-container" id="add-btn">
+			<button type="button" class="am-btn am-btn-default am-radius am-margin-top">增加参数</button>
+			<button type="button" class="am-btn am-btn-default am-radius am-margin-top">增加文件</button>
+		</div>
+
+		</form>
+
+	</div>
+
+	<div class="am-modal am-modal-no-btn" tabindex="-1">
+	  <div class="am-modal-dialog">
+	    <div class="am-modal-hd"># 提醒 #
+	      <a href="javascript: void(0)" class="am-close am-close-spin" data-am-modal-close>&times;</a>
+	    </div>
+	    <div class="am-modal-bd">
+	      网址不能为空。
+	    </div>
+	  </div>
+	</div>
+
+	<h5>©2016 Jianliu</h5>
+</div>
+
+<script type="text/javascript">
+	// 提交按钮
+	$(".body-submit").click(function(){
+		var url = $(".body-url").val();
+		if(url == ""){
+			$(".am-modal-bd").text("网址 不能为空。");
+			$(".am-modal").modal('open');
+			return false;
+		}
+		var empty = false;
+		$("#body-box .body-name").each(function (index, domEle) {
+		  if ($(this).val() == "") {
+		  	$(".am-modal-bd").text("Body参数名称 不能为空。");
+			$(".am-modal").modal('open');
+			empty = true;
+			return false;
+		  }
+		});
+		if(!empty){
+			// 补全http
+			if(url.indexOf("http://") == -1){
+				url = url.replace("www.", "http://www.");
+				$(".body-url").val(url);
+			}
+			// 提交
+			$("form").attr("action", url).submit();
+		}
+	});
+	// 重新绑定事件
+	function bind_change() {
+		// 选择文件事件
+		$("input[type='file']").on("change", function() {
+		  var fileList = $(this).parents('.am-g').find('#file-list');
+		  var fileNames = '';
+		  $.each(this.files, function() {
+		    fileNames += '<span class="am-badge am-badge-secondary am-round am-vertical-align-middle">' + this.name + '</span> ';
+		  });
+		  $(fileList).html(fileNames);
+		});
+		// 删除参数事件
+		$(".delete-body").click(function(){
+			$(this).parents('.am-g').remove();
+		});
+		// body参数名称事件
+		$(".body-name").on("change", function(){
+			$(this).parents(".am-g").find("input").eq(1).attr("name", $(this).val());
+		});
+	}
+
+	// 增加参数
+	$("#add-btn button").eq(0).click(function(){
+		$("#body-box").append($("#type-0").html());
+		bind_change();
+	});
+
+	// 增加文件
+	$("#add-btn button").eq(1).click(function(){
+		$("#body-box").append($("#type-1").html());
+		bind_change();
+	});
+</script>
+
+</body>
+</html>
